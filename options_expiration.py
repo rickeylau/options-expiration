@@ -1,83 +1,3 @@
-#!/usr/bin/env python3
-"""Publish selected options dates; monthly rules and Cboe currently listed weekly series."""
-import argparse
-import calendar
-import json
-import re
-from datetime import date, datetime, time, timedelta, timezone
-from pathlib import Path
-from urllib.request import Request, urlopen
-from zoneinfo import ZoneInfo
-from bs4 import BeautifulSoup
-
-ROOT = Path(__file__).resolve().parent
-ET = ZoneInfo('America/New_York')
-HOLIDAYS = 'https://raw.githubusercontent.com/rickeylau/market-holidays/main/holidays.json'
-HOLIDAY_OFFICIAL = 'https://www.cboe.com/about/hours/us-options/'
-WEEKLY = 'https://www.cboe.com/available_weeklys/'
-SPX = 'https://www.cboe.com/tradable-products/sp-500/spx-options/spx-specifications'
-SPXO = 'https://www.cboe.com/insights/posts/cboe-introduces-am-settled-weekly-options-on-the-s-p-500-index/'
-VIX = 'https://www.cboe.com/tradable-products/vix/vix-options/specifications'
-OIC = 'https://www.optionseducation.org/referencelibrary/expiration-calendar'
-HFILE = ROOT/'holidays_snapshot.json'
-WFILE = ROOT/'listed_weeklys.json'
-OUT = ROOT/'options-expiration.ics'
-KEYS = {'spx_am','monthly_opex','month_end','vix_weekly','spxo'}
-
-
-def get(url):
-    req = Request(url, headers={'User-Agent':'Mozilla/5.0 (OptionsExpirationCalendar)', 'Accept':'*/*'})
-    with urlopen(req, timeout=40) as r:
-        data = r.read(4_000_001)
-    if len(data)>4_000_000:
-        raise ValueError('Download too large')
-    return data
-
-
-def validate_holidays(payload, current_year):
-    if payload.get('source') != HOLIDAY_OFFICIAL:
-        raise ValueError('Unexpected holiday source')
-    datetime.strptime(payload['stamp'], '%Y%m%dT%H%M%SZ')
-    years = {}
-    for e in payload['events']:
-        d = date.fromisoformat(e['date'])
-        if d.weekday() >= 5 or not e['holiday'] or e['close'] not in (None, '13:00'):
-            raise ValueError(f'Invalid holiday: {e}')
-        y = years.setdefault(d.year, {})
-        if d in y: raise ValueError(f'Duplicate date {d}')
-        y[d] = e['close']
-    if current_year not in years: raise ValueError('Current year holiday data missing')
-    for y, exceptions in years.items():
-        if not 9 <= sum(x is None for x in exceptions.values()) <= 20:
-            raise ValueError(f'Incomplete holiday schedule {y}')
-    return years
-
-
-def parse_weeklys(html):
-    soup = BeautifulSoup(html, 'html.parser')
-    result = {}
-    for table in soup.find_all('table'):
-        rows = {}
-        for tr in table.find_all('tr'):
-            cells = tr.find_all(['td','th'], recursive=False)
-            if not cells: continue
-            key = ' '.join(cells[0].stripped_strings).strip().upper()
-            if key not in {'VIX','SPXO'}: continue
-            # The listing table dates use US mm/dd/yy, not product overview rows.
-            dates = set()
-            for cell in cells[1:]:
-                for match in re.findall(r'\b\d{1,2}/\d{1,2}/(?:\d{4}|\d{2})\b', cell.get_text(' ',strip=True)):
-                    dates.add(datetime.strptime(match, '%m/%d/%Y' if len(match.split('/')[-1])==4 else '%m/%d/%y').date().isoformat())
-            if key in rows: raise ValueError(f'Duplicate listing row {key}')
-            rows[key] = sorted(dates)
-        if set(rows)=={'VIX','SPXO'} and any(rows.values()):
-            if result: raise ValueError('Multiple listing tables')
-            result = rows
-    if not result or not any(result.values()):
-        raise ValueError('No usable VIX/SPXO listing dates; refusing to replace snapshot')
-    return result
-
-
 def validate_weeklys(payload):
     datetime.strptime(payload['stamp'], '%Y%m%dT%H%M%SZ')
     for k in ('VIX','SPXO'):
@@ -179,7 +99,7 @@ def main():
         new_years=validate_holidays(fresh,today.year)
         if not set(old_years).issubset(new_years): raise ValueError('Holiday coverage shrank')
         h=fresh
-        listed=parse_weeklys(get(WEEKLY))
+        listed=fetch_weeklys()
         new={k:sorted(set(s for s in w[k] if s<=today.isoformat())|set(listed[k])) for k in ('VIX','SPXO')}
         if any(new[k]!=w[k] for k in new): w={'stamp':datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'),**new}
     data,count=render(h,w,cfg,today.year)
