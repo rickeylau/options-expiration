@@ -1,0 +1,121 @@
+{
+  "source": "https://www.cboe.com/about/hours/us-options/",
+  "stamp": "20261115T000000Z",
+  "events": [
+    {
+      "date": "2026-01-01",
+      "holiday": "New Year's Day",
+      "close": null
+    },
+    {
+      "date": "2026-01-19",
+      "holiday": "Martin Luther King Jr. Day",
+      "close": null
+    },
+    {
+      "date": "2026-02-16",
+      "holiday": "Presidents' Day",
+      "close": null
+    },
+    {
+      "date": "2026-04-03",
+      "holiday": "Good Friday",
+      "close": null
+    },
+    {
+      "date": "2026-05-25",
+      "holiday": "Memorial Day",
+      "close": null
+    },
+    {
+      "date": "2026-06-19",
+      "holiday": "Juneteenth Holiday",
+      "close": null
+    },
+    {
+      "date": "2026-07-03",
+      "holiday": "Independence Day Observed",
+      "close": null
+    },
+    {
+      "date": "2026-09-07",
+      "holiday": "Labor Day",
+      "close": null
+    },
+    {
+      "date": "2026-11-26",
+      "holiday": "Thanksgiving Day",
+      "close": null
+    },
+    {
+      "date": "2026-11-27",
+      "holiday": "Thanksgiving Early Close",
+      "close": "13:00"
+    },
+    {
+      "date": "2026-12-24",
+      "holiday": "Christmas Early Close",
+      "close": "13:00"
+    },
+    {
+      "date": "2026-12-25",
+      "holiday": "Christmas Day",
+      "close": null
+    },
+    {
+      "date": "2027-01-01",
+      "holiday": "New Year's Day",
+      "close": null
+    },
+    {
+      "date": "2027-01-18",
+      "holiday": "Martin Luther King Jr. Day",
+      "close": null
+    },
+    {
+      "date": "2027-02-15",
+      "holiday": "Presidents' Day",
+      "close": null
+    },
+    {
+      "date": "2027-03-26",
+      "holiday": "Good Friday",
+      "close": null
+    },
+    {
+      "date": "2027-05-31",
+      "holiday": "Memorial Day",
+      "close": null
+    },
+    {
+      "date": "2027-06-18",
+      "holiday": "Juneteenth Observed",
+      "close": null
+    },
+    {
+      "date": "2027-07-05",
+      "holiday": "Independence Day Observed",
+      "close": null
+    },
+    {
+      "date": "2027-09-06",
+      "holiday": "Labor Day",
+      "close": null
+    },
+    {
+      "date": "2027-11-25",
+      "holiday": "Thanksgiving Day",
+      "close": null
+    },
+    {
+      "date": "2027-11-26",
+      "holiday": "Thanksgiving Early Close",
+      "close": "13:00"
+    },
+    {
+      "date": "2027-12-24",
+      "holiday": "Christmas Day Observed",
+      "close": null
+    }
+  ]
+}
