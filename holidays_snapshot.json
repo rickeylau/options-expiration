@@ -1,6 +1,6 @@
 {
   "source": "https://www.cboe.com/about/hours/us-options/",
-  "stamp": "20261115T000000Z",
+  "stamp": "20261115T115451Z",
   "events": [
     {
       "date": "2026-01-01",
@@ -9,7 +9,7 @@
     },
     {
       "date": "2026-01-19",
-      "holiday": "Martin Luther King Jr. Day",
+      "holiday": "Martin Luther King, Jr. Day",
       "close": null
     },
     {
@@ -69,7 +69,7 @@
     },
     {
       "date": "2027-01-18",
-      "holiday": "Martin Luther King Jr. Day",
+      "holiday": "Martin Luther King, Jr. Day",
       "close": null
     },
     {
